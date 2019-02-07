@@ -1,7 +1,11 @@
 import os
 
+
 #入力データの定義
 IMG_SIZE = (28, 28, 1)
+
+#実行ファイルの場所を作業ディレクトリに設定する
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 #実行ディレクトリの取得
 Work_Dir = os.path.dirname(os.path.abspath(__file__))
@@ -35,7 +39,7 @@ net = BuildModel()
 from trainer import eval_net, train_net
 
 #データをすべて転送する
-device_select = "cpu"
+device_select = "cuda:0"
 n_epoch = 20
 net.to(device_select)
 

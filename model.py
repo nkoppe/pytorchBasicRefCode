@@ -41,5 +41,35 @@ def BuildModel():
 
     #最終的なモデル
     net = torch.nn.Sequential(Network_Convolution, Network_MLP)
-    return net
+    return 
 
+def SaveModel(net, filename="net.onnx"):
+    #必要なインポートを行う
+    import torch.onnx
+
+    #モデルをCPU側へ転送
+    #GPUに乗せたまま保存するとGPUが無いとロードできなくなる
+    net.cpu()
+
+    #ネットワークの重みを保存する
+    torch.save(net.state_dict(), filename)
+    #ネットワーク情報が無いため注意
+    #torch.save(net)でネットワークも出力可能（公式は非推奨）
+
+def SaveOnncModel(net, filename="net.onnx", size=(1, 3, 224, 224)):
+    import torch.onnx
+
+    #モデルを保存前に推論モードに変更する
+    net.eval()
+
+    #ダミーデータの作成
+    dummydata = torch.empty(size[0], size[1], size[2], size[3], dtype=torch.float32)
+
+    #ONNXファイルへネットワークを出力する
+    dummy = torch.onnx.export(net, dummydata, filename)
+
+def LoadModel(net, filename = "net.prm"):
+    from torchvision import models
+    net.cpu()
+    params = net.state_dict()
+    torch.load(params,filename, pickle)
