@@ -1,9 +1,6 @@
 import os
 
 
-#入力データの定義
-IMG_SIZE = (28, 28, 1)
-
 #実行ファイルの場所を作業ディレクトリに設定する
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -31,8 +28,9 @@ test_loader = torch.utils.data.DataLoader(f_mnist_test, batch_size=batch_size, s
 
 
 #モデル構築
-from model import BuildModel
-net = BuildModel()
+from model import DNNModel
+model = DNNModel()
+net = model.network     #扱いやすいようにネットワークの参照を取り出す
 
 #自作ヘルパー関数のロード
 #評価処理と訓練処理
@@ -45,3 +43,8 @@ net.to(device_select)
 
 #訓練実施
 train_net(net, train_loader, test_loader, n_iter=n_epoch, device=device_select)
+print("モデル訓練完了")
+
+model.SaveModel()
+model.SaveOnnxModel()
+print("モデル出力完了")
