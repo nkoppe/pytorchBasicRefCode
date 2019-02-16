@@ -66,6 +66,49 @@ class DNNModel:
         #モデルをメンバ変数へ格納する
         return net
 
+    def BuildCustomModel(self):
+        '''
+        モデルを定義・構築する
+        '''
+        size = (1,224,224)
+        self.size = size
+
+        #学習済みモデルの取得
+        from torchvision.models import vgg19_bn
+        net = vgg19_bn(True)
+        
+
+        #(N, C, H, W)形式のTensorを(N, C*H*W)に引き延ばす層
+        #畳み込み層の出力をMLPに渡す際に必要
+        class FlattenLayer(torch.nn.Module):
+            def forward(self, x):
+                sizes = x.size()
+                return x.view(sizes[0], -1)
+
+        #畳み込みネットワークを取得
+        Network_Convolution = vgg19_bn.features
+
+
+        #Linear（全結合層）を使うときは、入力テンソルの形状を指定する必要あり
+        #畳み込み部に適当なテンソルを入力して出力サイズを取得する
+        test_input = torch.ones(1,size[0],size[1],size[2])
+        conv_output_size = Network_Convolution(test_input).size()[-1]
+
+        #2層のMLP
+        Network_MLP = torch.nn.Sequential(
+            torch.nn.Linear(conv_output_size,200),
+            torch.nn.ReLU(),
+            torch.nn.BatchNorm1d(200),
+            torch.nn.Dropout(0.25),
+            torch.nn.Linear(200,10)
+        )
+
+        #最終的なモデル
+        net = torch.nn.Sequential(Network_Convolution, Network_MLP)
+        
+        #モデルをメンバ変数へ格納する
+        return net
+
 
     def SaveModel(self, filename="net.pt", net=None):
         '''

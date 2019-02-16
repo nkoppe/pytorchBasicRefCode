@@ -7,9 +7,6 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 #実行ディレクトリの取得
 Work_Dir = os.path.dirname(os.path.abspath(__file__))
 
-#設定情報のロード
-
-
 #データセットを準備する
 import torch
 from torchvision import transforms
@@ -31,6 +28,8 @@ test_loader = torch.utils.data.DataLoader(f_mnist_test, batch_size=batch_size, s
 from model import DNNModel
 model = DNNModel()
 net = model.network     #扱いやすいようにネットワークの参照を取り出す
+
+print(net)      #ネットワーク構造の表示
 
 #自作ヘルパー関数のロード
 #評価処理と訓練処理
