@@ -1,5 +1,5 @@
 import os
-from model import DNNModel
+from modeldef import BuildModel
 
 #実行ファイルの場所を作業ディレクトリに設定する
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -8,12 +8,13 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 Work_Dir = os.path.dirname(os.path.abspath(__file__))
 
 #モデルを読み込み
-dnnmodel = DNNModel()
-dnnmodel.LoadModel("net.pt", True)
-net = dnnmodel.network
+import modelio
+net = BuildModel()
+modelio.LoadModel("model.pt", net ,True)
+print(net)		#モデルを表示する
 
 device = "cuda:0"
-net.to(device)
+net.to(device)	#転送
 
 
 #データセットを準備する

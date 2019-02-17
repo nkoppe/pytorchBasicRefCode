@@ -25,9 +25,8 @@ test_loader = torch.utils.data.DataLoader(f_mnist_test, batch_size=batch_size, s
 
 
 #モデル構築
-from model import DNNModel
-model = DNNModel()
-net = model.network     #扱いやすいようにネットワークの参照を取り出す
+from modeldef import BuildModel
+net = BuildModel()
 
 print(net)      #ネットワーク構造の表示
 
@@ -37,13 +36,15 @@ from trainer import eval_net, train_net
 
 #データをすべて転送する
 device_select = "cuda:0"
-n_epoch = 20
+n_epoch = 5
 net.to(device_select)
 
 #訓練実施
 train_net(net, train_loader, test_loader, n_iter=n_epoch, device=device_select)
 print("モデル訓練完了")
 
-model.SaveModel()
-model.SaveOnnxModel()
+#モデルをシリアライズ
+import modelio
+modelio.SaveModelWeights(net,"model.pth")
+modelio.SaveOnnxModel(net, "model.onnx", (1,28,28))
 print("モデル出力完了")

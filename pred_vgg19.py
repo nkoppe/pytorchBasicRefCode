@@ -19,6 +19,13 @@ device = "cpu"
 net.to(device)
 
 
+#モデルをシリアライズ
+import modelio
+modelio.SaveModelWeights(net,"model.pt")
+modelio.SaveOnnxModel(net, "model.onnx", (1,28,28))
+print("モデル出力完了")
+
+
 #入力画像を準備する
 import torch
 from torchvision import transforms
@@ -48,4 +55,4 @@ print(img_tensor.shape)
 
 out = net(img_tensor)
 print(out.topk(3))
-pring("処理完了")
+print("処理完了")
