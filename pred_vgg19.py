@@ -21,8 +21,8 @@ net.to(device)
 
 #モデルをシリアライズ
 import modelio
-modelio.SaveModelWeights(net,"model.pt")
-modelio.SaveOnnxModel(net, "model.onnx", (1,28,28))
+modelio.SaveModelWeights(net,"vgg19_bn.pt")
+modelio.SaveOnnxModel(net, "model.onnx", (1,224,224))
 print("モデル出力完了")
 
 

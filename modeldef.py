@@ -11,21 +11,38 @@ class VGG19custom(torch.nn.Module):
 		
 		#学習済みモデルの取得
 		from torchvision.models import vgg19_bn
-		net = vgg19_bn(True)
+		net = vgg19_bn(False)	#Trueならば学習済みの重みをダウンロードする
 
-		#たたみ込み部は流用
+		print(net)
+
+		#既にあるモデルから重みをロードする
+		import modelio
+		modelio.LoadModel("vgg19_bn.pt", net, False)
+
+		#畳み込み部は流用
 		self.features = net.features		#モデルを定義（たたみ込み部)
 
-		
-		self.fc1 = nn.Linear(4, 100)
-		self.fc2 = nn.Linear(100, 50)
-		self.fc3 = nn.Linear(50, 3)
+		#畳み込み部の出力サイズを調べる
+		size = (3, 224, 224)
+		test_input = torch.ones(1,size[0],size[1],size[2])
+		temp = self.features(test_input)
+		temp = temp.view(temp.size()[0], -1)
+		conv_output_size = temp.size()[-1]
 
+		#クラス分類を定義
+		self.classifier = torch.nn.Sequential(
+			torch.nn.Linear(conv_output_size,512),
+			torch.nn.ReLU(),
+			torch.nn.BatchNorm1d(512),
+			torch.nn.Dropout(0.25),
+			torch.nn.Linear(512,101)
+		)
+		
 	def forward(self, x):
-		x = self.features(x)
-		x = F.relu(self.fc2(x))
-		x = self.fc3(x)
-		return F.log_softmax(x, dim = 1)
+		x = self.features(x)		#特徴抽出
+		x = x.view(x.size()[0], -1)		#Flatten
+		x = self.classifier(x)		#分類
+		return torch.nn.Softmax(x)
 
 
 #モデル構築
