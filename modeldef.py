@@ -23,11 +23,11 @@ class VGG19custom(torch.nn.Module):
 		self.features = net.features		#モデルを定義（たたみ込み部)
 
 		#畳み込み部の出力サイズを調べる
-		size = (3, 224, 224)
-		test_input = torch.ones(1,size[0],size[1],size[2])
-		temp = self.features(test_input)
-		temp = temp.view(temp.size()[0], -1)
-		conv_output_size = temp.size()[-1]
+		size = (3, 224, 224)		#入力画像のテンソル形状
+		test_input = torch.ones(1,size[0],size[1],size[2])	#ダミーの入力データ
+		temp = self.features(test_input)			#畳み込みする
+		temp = temp.view(temp.size()[0], -1)		#Flattenをかける
+		conv_output_size = temp.size()[-1]		#出力テンソルサイズを取得
 
 		#クラス分類を定義
 		self.classifier = torch.nn.Sequential(
