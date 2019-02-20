@@ -13,9 +13,7 @@ class VGG19custom(torch.nn.Module):
 		from torchvision.models import vgg19_bn
 		net = vgg19_bn(False)	#Trueならば学習済みの重みをダウンロードする
 
-		print(net)
-
-		#既にあるモデルから重みをロードする
+		#既にあるモデルファイルから重みをロードする
 		import modelio
 		modelio.LoadModel("vgg19_bn.pt", net, False)
 
@@ -39,9 +37,9 @@ class VGG19custom(torch.nn.Module):
 		)
 		
 	def forward(self, x):
-		x = self.features(x)		#特徴抽出
+		x = self.features(x)				#特徴抽出
 		x = x.view(x.size()[0], -1)		#Flatten
-		x = self.classifier(x)		#分類
+		x = self.classifier(x)			#分類
 		return torch.nn.Softmax(x)
 
 
