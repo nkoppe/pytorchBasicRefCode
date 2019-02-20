@@ -15,7 +15,7 @@ class VGG19custom(torch.nn.Module):
 
 		#既にあるモデルファイルから重みをロードする
 		import modelio
-		modelio.LoadModel("vgg19_bn.pt", net, False)
+		modelio.LoadModelWeights("vgg19_bn.pt", net, False)
 
 		#畳み込み部は流用
 		self.features = net.features		#モデルを定義（たたみ込み部)

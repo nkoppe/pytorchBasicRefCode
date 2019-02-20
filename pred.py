@@ -10,7 +10,7 @@ Work_Dir = os.path.dirname(os.path.abspath(__file__))
 #モデルを読み込み
 import modelio
 net = BuildModel()
-modelio.LoadModel("model.pt", net ,True)
+modelio.LoadModelWeights("model.pt", net ,True)
 print(net)		#モデルを表示する
 
 device =  'cuda:0' if torch.cuda.is_available() else 'cpu'		#CUDAが使えるなら使う
