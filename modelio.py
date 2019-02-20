@@ -37,7 +37,7 @@ def SaveModelData(net, filename):
 	#ネットワークの重みを保存する
 	torch.save(net, filename)
 
-def LoadModel(filename, net ,evalMode=True):
+def LoadModelWeights(filename, net ,evalMode=True):
 	'''
 	モデルの読み込みを行う(重みの読み込み)
 	fimename: ファイル名

@@ -13,7 +13,7 @@ net = BuildModel()
 modelio.LoadModel("model.pt", net ,True)
 print(net)		#モデルを表示する
 
-device = "cuda:0"
+device =  'cuda:0' if torch.cuda.is_available() else 'cpu'		#CUDAが使えるなら使う
 net.to(device)	#転送
 
 
