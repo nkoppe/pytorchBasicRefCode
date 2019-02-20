@@ -7,21 +7,10 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 #実行ディレクトリの取得
 Work_Dir = os.path.dirname(os.path.abspath(__file__))
 
-#データセットを準備する
-#import torch
-#from torchvision import transforms
-#from torchvision.datasets import FashionMNIST
-
-#f_mnist_train = FashionMNIST(Work_Dir + "FashionMNIST", train=True, download=True, 
-#                transform=transforms.ToTensor())
-
-#f_mnist_test = FashionMNIST(Work_Dir + "FashionMNIST", train=False, download=True, 
-#                transform=transforms.ToTensor())
-
-##データーローダーの作成
-#batch_size = 128
-#train_loader = torch.utils.data.DataLoader(f_mnist_train, batch_size=batch_size, shuffle=True)
-#test_loader = torch.utils.data.DataLoader(f_mnist_test, batch_size=batch_size, shuffle=True)
+#DatasetとDataLoaderの準備
+import load_dataset
+batch_size = 128
+train_loader , test_loader = load_dataset.Get_FashionMNIST(batch_size)
 
 
 #モデル構築
