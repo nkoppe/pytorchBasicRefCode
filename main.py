@@ -10,8 +10,20 @@ Work_Dir = os.path.dirname(os.path.abspath(__file__))
 #DatasetとDataLoaderの準備
 import load_dataset
 batch_size = 128
-train_loader , test_loader = load_dataset.Get_FashionMNIST(batch_size)
+from torchvision import transforms
+#正規化処理を定義
+tf_nrm = transforms.Normalize((0.5, 0.5, 0.5),(0.5, 0.5, 0.5))
+tf = transforms.Compose([
+	transforms.Resize((224,224)),		#(h,w)で指定
+	transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.1),
+	transforms.ToTensor(),      #PIL形式のデータをテンソルへ変換(チャンネル、高さ、幅の並びになる),値は[0,1]の範囲になる
+	transforms.Lambda(lambda x : 1.0 - x ),		#ラムダ式による処理の定義
+	tf_nrm])	
 
+#ImageFolderでデータセットを読み込み、分割してデータローダーを作る
+from torchvision.datasets import ImageFolder
+train_loader, test_loader = load_dataset.GetDataLoader_withSplit(ImageFolder('./food-101/images',tf), 0.2, batch_size)
+print("データーローダー準備完了")
 
 #モデル構築
 from modeldef import VGG19custom
@@ -36,5 +48,5 @@ print("モデル訓練完了")
 #モデルをシリアライズ
 import modelio
 modelio.SaveModelWeights(net,"model.pth")
-modelio.SaveOnnxModel(net, "model.onnx", (1,28,28))
+modelio.SaveOnnxModel(net, "model.onnx", (3,224,224))
 print("モデル出力完了")
