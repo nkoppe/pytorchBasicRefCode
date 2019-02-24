@@ -9,7 +9,7 @@ Work_Dir = os.path.dirname(os.path.abspath(__file__))
 
 #DatasetとDataLoaderの準備
 import load_dataset
-batch_size = 128
+batch_size = 64
 from torchvision import transforms
 #正規化処理を定義
 tf_nrm = transforms.Normalize((0.5, 0.5, 0.5),(0.5, 0.5, 0.5))
@@ -37,6 +37,7 @@ from trainer import eval_net, train_net
 
 #データをすべて転送する
 import torch
+#device_select = 'cpu'		#デバッグ用
 device_select = 'cuda' if torch.cuda.is_available() else 'cpu'		#CUDAが使えるなら使う
 n_epoch = 5
 net.to(device_select)

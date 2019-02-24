@@ -15,10 +15,15 @@ class VGG19custom(torch.nn.Module):
 
 		#既にあるモデルファイルから重みをロードする
 		import modelio
+		#modelio.SaveModelWeights(net, "vgg19_bn.pt")
 		modelio.LoadModelWeights("vgg19_bn.pt", net, False)
 
 		#畳み込み部は流用
 		self.features = net.features		#モデルを定義（たたみ込み部)
+
+		#パラメータ固定
+		for p in self.features.parameters():
+			p.requires_grad = False
 
 		#畳み込み部の出力サイズを調べる
 		size = (3, 224, 224)		#入力画像のテンソル形状
@@ -31,7 +36,7 @@ class VGG19custom(torch.nn.Module):
 		self.classifier = torch.nn.Sequential(
 			torch.nn.Linear(conv_output_size,512),
 			torch.nn.ReLU(),
-			torch.nn.BatchNorm1d(512),
+			#torch.nn.BatchNorm1d(512),
 			torch.nn.Dropout(0.25),
 			torch.nn.Linear(512,101)
 		)
@@ -40,7 +45,8 @@ class VGG19custom(torch.nn.Module):
 		x = self.features(x)				#特徴抽出
 		x = x.view(x.size()[0], -1)		#Flatten
 		x = self.classifier(x)			#分類
-		return torch.nn.Softmax(x)
+		#x = torch.nn.LogSoftmax(x)
+		return x
 
 
 #モデル構築
